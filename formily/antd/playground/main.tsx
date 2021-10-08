@@ -1,5 +1,5 @@
 import 'antd/dist/antd.less'
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom'
 import {
   Designer,
@@ -25,6 +25,7 @@ import {
   Shortcut,
   KeyCode,
 } from '@designable/core'
+import { useTranslation, I18nextProvider } from 'react-i18next'
 import {
   LogoWidget,
   ActionsWidget,
@@ -62,6 +63,7 @@ import {
   FormLayout,
   FormGrid,
 } from '../src'
+import { i18n } from '../src/i18n'
 
 GlobalRegistry.registerDesignerLocales({
   'zh-CN': {
@@ -83,6 +85,8 @@ GlobalRegistry.registerDesignerLocales({
 })
 
 const App = () => {
+  const { t } = useTranslation()
+  const lng = i18n.language
   const engine = useMemo(
     () =>
       createDesigner({
@@ -101,119 +105,129 @@ const App = () => {
       }),
     []
   )
+
+  function useSchemaScope() {
+    return useMemo(() => ({ t }), [t])
+  }
+
   return (
-    <Designer engine={engine}>
-      <StudioPanel logo={<LogoWidget />} actions={<ActionsWidget />}>
-        <CompositePanel>
-          <CompositePanel.Item title="panels.Component" icon="Component">
-            <ResourceWidget
-              title="sources.Inputs"
-              sources={[
-                Input,
-                Password,
-                NumberPicker,
-                Rate,
-                Slider,
-                Select,
-                TreeSelect,
-                Cascader,
-                Transfer,
-                Checkbox,
-                Radio,
-                DatePicker,
-                TimePicker,
-                Upload,
-                Switch,
-                ObjectContainer,
-              ]}
-            />
-            <ResourceWidget
-              title="sources.Layouts"
-              sources={[
-                Card,
-                FormGrid,
-                FormTab,
-                FormLayout,
-                FormCollapse,
-                Space,
-              ]}
-            />
-            <ResourceWidget
-              title="sources.Arrays"
-              sources={[ArrayCards, ArrayTable]}
-            />
-            <ResourceWidget title="sources.Displays" sources={[Text]} />
-          </CompositePanel.Item>
-          <CompositePanel.Item title="panels.OutlinedTree" icon="Outline">
-            <OutlineTreeWidget />
-          </CompositePanel.Item>
-          <CompositePanel.Item title="panels.History" icon="History">
-            <HistoryWidget />
-          </CompositePanel.Item>
-        </CompositePanel>
-        <Workspace id="form">
-          <WorkspacePanel>
-            <ToolbarPanel>
-              <DesignerToolsWidget />
-              <ViewToolsWidget
-                use={['DESIGNABLE', 'JSONTREE', 'MARKUP', 'PREVIEW']}
+    <I18nextProvider i18n={i18n}>
+      <Designer engine={engine}>
+        <StudioPanel logo={<LogoWidget />} actions={<ActionsWidget />}>
+          <CompositePanel>
+            <CompositePanel.Item title="panels.Component" icon="Component">
+              <ResourceWidget
+                title={t('sources.Inputs')}
+                sources={[
+                  Input,
+                  Password,
+                  NumberPicker,
+                  Rate,
+                  Slider,
+                  Select,
+                  TreeSelect,
+                  Cascader,
+                  Transfer,
+                  Checkbox,
+                  Radio,
+                  DatePicker,
+                  TimePicker,
+                  Upload,
+                  Switch,
+                  ObjectContainer,
+                ]}
               />
-            </ToolbarPanel>
-            <ViewportPanel>
-              <ViewPanel type="DESIGNABLE">
-                {() => (
-                  <ComponentTreeWidget
-                    components={{
-                      Form,
-                      Field,
-                      Input,
-                      Select,
-                      TreeSelect,
-                      Cascader,
-                      Radio,
-                      Checkbox,
-                      Slider,
-                      Rate,
-                      NumberPicker,
-                      Transfer,
-                      Password,
-                      DatePicker,
-                      TimePicker,
-                      Upload,
-                      Switch,
-                      Text,
-                      Card,
-                      ArrayCards,
-                      ArrayTable,
-                      Space,
-                      FormTab,
-                      FormCollapse,
-                      FormGrid,
-                      FormLayout,
-                      ObjectContainer,
-                    }}
-                  />
-                )}
-              </ViewPanel>
-              <ViewPanel type="JSONTREE" scrollable={false}>
-                {(tree, onChange) => (
-                  <SchemaEditorWidget tree={tree} onChange={onChange} />
-                )}
-              </ViewPanel>
-              <ViewPanel type="MARKUP" scrollable={false}>
-                {(tree) => <MarkupSchemaWidget tree={tree} />}
-              </ViewPanel>
-              <ViewPanel type="PREVIEW">
-                {(tree) => <PreviewWidget tree={tree} />}
-              </ViewPanel>
-            </ViewportPanel>
-          </WorkspacePanel>
-        </Workspace>
-        <SettingsPanel title="panels.PropertySettings">
-          <SettingsForm uploadAction="https://www.mocky.io/v2/5cc8019d300000980a055e76" />
-        </SettingsPanel>
-      </StudioPanel>
-    </Designer>
+              <ResourceWidget
+                title="sources.Layouts"
+                sources={[
+                  Card,
+                  FormGrid,
+                  FormTab,
+                  FormLayout,
+                  FormCollapse,
+                  Space,
+                ]}
+              />
+              <ResourceWidget
+                title="sources.Arrays"
+                sources={[ArrayCards, ArrayTable]}
+              />
+              <ResourceWidget title="sources.Displays" sources={[Text]} />
+            </CompositePanel.Item>
+            <CompositePanel.Item title="panels.OutlinedTree" icon="Outline">
+              <OutlineTreeWidget />
+            </CompositePanel.Item>
+            <CompositePanel.Item title="panels.History" icon="History">
+              <HistoryWidget />
+            </CompositePanel.Item>
+          </CompositePanel>
+          <Workspace id="form">
+            <WorkspacePanel>
+              <ToolbarPanel>
+                <DesignerToolsWidget />
+                <ViewToolsWidget
+                  use={['DESIGNABLE', 'JSONTREE', 'MARKUP', 'PREVIEW']}
+                />
+              </ToolbarPanel>
+              <ViewportPanel>
+                <ViewPanel type="DESIGNABLE">
+                  {() => (
+                    <ComponentTreeWidget
+                      components={{
+                        Form,
+                        Field,
+                        Input,
+                        Select,
+                        TreeSelect,
+                        Cascader,
+                        Radio,
+                        Checkbox,
+                        Slider,
+                        Rate,
+                        NumberPicker,
+                        Transfer,
+                        Password,
+                        DatePicker,
+                        TimePicker,
+                        Upload,
+                        Switch,
+                        Text,
+                        Card,
+                        ArrayCards,
+                        ArrayTable,
+                        Space,
+                        FormTab,
+                        FormCollapse,
+                        FormGrid,
+                        FormLayout,
+                        ObjectContainer,
+                      }}
+                    />
+                  )}
+                </ViewPanel>
+                <ViewPanel type="JSONTREE" scrollable={false}>
+                  {(tree, onChange) => (
+                    <SchemaEditorWidget tree={tree} onChange={onChange} />
+                  )}
+                </ViewPanel>
+                <ViewPanel type="MARKUP" scrollable={false}>
+                  {(tree) => <MarkupSchemaWidget tree={tree} />}
+                </ViewPanel>
+                <ViewPanel type="PREVIEW">
+                  {(tree) => <PreviewWidget tree={tree} />}
+                </ViewPanel>
+              </ViewportPanel>
+            </WorkspacePanel>
+          </Workspace>
+          <SettingsPanel title="panels.PropertySettings">
+            <SettingsForm
+              uploadAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+              scope={useSchemaScope()}
+            />
+          </SettingsPanel>
+        </StudioPanel>
+      </Designer>
+    </I18nextProvider>
   )
 }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { Input as FormilyInput } from '@formily/antd'
 import { createBehavior, createResource } from '@designable/core'
 import { DnFC } from '@designable/react'
+import { i18n } from '../../i18n'
 import { createFieldSchema } from '../Field'
 import { AllSchemas } from '../../schemas'
 import { AllLocales } from '../../locales'
@@ -17,7 +18,7 @@ Input.Behavior = createBehavior(
     designerProps: {
       propsSchema: createFieldSchema(AllSchemas.Input),
     },
-    designerLocales: AllLocales.Input,
+    // designerLocales: AllLocales.Input,
   },
   {
     name: 'Input.TextArea',
@@ -38,7 +39,6 @@ Input.Resource = createResource(
         componentName: 'Field',
         props: {
           type: 'string',
-          title: 'Input',
           'x-decorator': 'FormItem',
           'x-component': 'Input',
         },

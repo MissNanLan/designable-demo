@@ -7,6 +7,7 @@ export const Input: ISchema & { TextArea?: ISchema } = {
       type: 'string',
       'x-decorator': 'FormItem',
       'x-component': 'Input',
+      title: `{{ t('Input.settings.x-component-props.addonBefore')}}`,
     },
     addonAfter: {
       type: 'string',

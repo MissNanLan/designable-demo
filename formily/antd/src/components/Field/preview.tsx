@@ -19,6 +19,7 @@ import {
   useComponents,
   DnFC,
 } from '@designable/react'
+import { useTranslation } from 'react-i18next'
 import { isArr, isStr } from '@designable/shared'
 import { Container } from '../../common/Container'
 import { AllLocales } from '../../locales'
@@ -92,6 +93,7 @@ const toDesignableFieldProps = (
   const results: any = {}
   each(SchemaStateMap, (fieldKey, schemaKey) => {
     const value = schema[schemaKey]
+
     if (isExpression(value)) {
       if (!NeedShownExpression[schemaKey]) return
       if (value) {
@@ -102,15 +104,20 @@ const toDesignableFieldProps = (
       results[fieldKey] = filterExpression(value)
     }
   })
+
   if (!components['FormItem']) {
     components['FormItem'] = FormItem
   }
+
   const decorator =
     schema['x-decorator'] && FormPath.getIn(components, schema['x-decorator'])
   const component =
     schema['x-component'] && FormPath.getIn(components, schema['x-component'])
+
   const decoratorProps = schema['x-decorator-props'] || {}
   const componentProps = schema['x-component-props'] || {}
+
+  // console.log('decoratorProps', decoratorProps)
 
   if (decorator) {
     results.decorator = [decorator, toJS(decoratorProps)]
@@ -129,6 +136,7 @@ const toDesignableFieldProps = (
   results.description = results.description && (
     <span data-content-editable="description">{results.description}</span>
   )
+
   return results
 }
 
@@ -136,6 +144,7 @@ export const Field: DnFC<ISchema> = observer((props) => {
   const designer = useDesigner()
   const components = useComponents()
   const node = useTreeNode()
+
   if (!node) return null
   const fieldProps = toDesignableFieldProps(
     props,
@@ -143,6 +152,7 @@ export const Field: DnFC<ISchema> = observer((props) => {
     designer.props.nodeIdAttrName,
     node.id
   )
+
   if (props.type === 'object') {
     return (
       <Container>
@@ -160,11 +170,16 @@ export const Field: DnFC<ISchema> = observer((props) => {
       </VoidField>
     )
   }
-  return <InternalField {...fieldProps} name={node.id} />
+
+  return (
+    <div>
+      <InternalField {...fieldProps} name={node.id} />
+    </div>
+  )
 })
 
 Field.Behavior = createBehavior({
   name: 'Field',
   selector: 'Field',
-  designerLocales: AllLocales.Field,
+  // designerLocales: AllLocales.Field,
 })
